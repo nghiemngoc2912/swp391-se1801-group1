@@ -38,4 +38,5 @@ public class Order {
     @Column(columnDefinition = "NCHAR(4)")
     String cardLast;
     String authorizationCode;
+
 }

@@ -41,6 +41,17 @@
         font-size: 2.5em; /* Điều chỉnh kích thước của chữ */
         text-align: center; /* Căn giữa chữ */
     }
+
+        select {
+        width: 200px;
+        height: 35px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin: 20px 0;
+        padding: 5px;
+        font-size: 16px;
+        color: #333;
+    }
     </style>
 
 </head>
@@ -60,6 +71,14 @@
         </div>
         <br><br>
 
+        <form action="#" th:action="@{/publisher/filter}" method="get">
+            <select name="status" onchange="this.form.submit()">
+                <option th:selected="${status == 'default'}" value="default">Tất cả nhà phát hành</option>
+                <option th:selected="${status == 'active'}" value="active">Nhà phát hành đang hoạt động</option>
+                <option th:selected="${status == 'inactive'}" value="inactive">Nhà phát hành đã dừng hoạt động</option>
+            </select>
+        </form>
+
         <div class="container">
             <div class="row">
                 <div th:each="publisher : ${listPublisher}"
@@ -70,8 +89,10 @@
                         <div>
                             <a class="btn btn-primary btn-sm"
                                th:href="@{/publisher/update(id=${publisher.id})}">Sửa</a>
-                            <a class="btn btn-danger btn-sm" th:href="@{/publisher/delete/{id}(id=${publisher.id})}"
-                               onclick="return confirm('Bạn chắc chứ?')">Ẩn</a>
+                            <a th:if="${!publisher.isDeleted}" class="btn btn-danger btn-sm" th:href="@{/publisher/delete(id=${publisher.id})}"
+                               onclick="return confirm('Bạn chắc chứ?')">Dừng hoạt động</a>
+                            <a th:if="${publisher.isDeleted}" class="btn btn-success btn-sm" th:href="@{/publisher/active(id=${publisher.id})}"
+                               onclick="return confirm('Bạn chắc chứ?')">Hoạt động lại</a>
                         </div>
                     </div>
                 </div>

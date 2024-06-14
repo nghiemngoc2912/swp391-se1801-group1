@@ -1,6 +1,5 @@
 package com.nishikatakagi.ProductDigital.model;
 
-import java.sql.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,12 +11,10 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
-
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "cart_items")
@@ -42,13 +39,6 @@ public class CartItem {
     public double getTotal() {
         total = cardType.getMoney().getUnitFund() * quantity;
         return total;
-    }
-
-    // initiate a new cartitem object
-    public CartItem(CardType cardType) {
-        this.cardType = cardType;
-        this.quantity = 1;
-        this.total = cardType.getMoney().getUnitFund();
     }
 
 }

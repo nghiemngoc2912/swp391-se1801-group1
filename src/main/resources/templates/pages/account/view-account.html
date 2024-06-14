@@ -106,13 +106,13 @@
                         <hr>
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
-                                <li class="page-item"><a class="page-link" th:if="${pageNo>0}" th:href="@{'?pageNo='+${pageNo-1}}">Previous</a></li>
-                                <li class="page-item"><a class="page-link" href="?pageNo=0">1</a></li>
-                                <li class="page-item" th:if="${pageNo-1>0}"><span style="display: inline-block;" th:if="${pageNo-2>0}">...</span><a style="display: inline-block;" class="page-link" th:href="@{'?pageNo='+${pageNo-1}}" th:text="${pageNo}"></a></li>
-                                <li class="page-item" th:if="${pageNo!=0 && (pageNo+1)!=totalPages}"><a class="page-link active" href="#" th:text="${pageNo+1}"></a></li>
-                                <li class="page-item" th:if="${pageNo+2<totalPages}"><a style="display: inline-block;"  class="page-link" th:href="@{'?pageNo='+${pageNo+1}}" th:text="${pageNo+2}"></a><span th:if="${pageNo+3<totalPages}" style="display: inline-block;">...</span></li>
-                                <li class="page-item" th:if="${totalPages-pageNo>1}"><a class="page-link" th:href="@{'?pageNo='+${totalPages-1}}" th:text="${totalPages}"></a></li>
-                                <li class="page-item"><a class="page-link" th:if="${pageNo<totalPages-1}" th:href="@{'?pageNo='+${pageNo+1}}">Next</a></li>
+                                <li class="page-item"><a class="page-link" th:if="${pageNo>0}"  th:href="@{${action}+'pageNo='+${pageNo-1}}">Previous</a></li>
+                                <li class="page-item"><a class="page-link" th:style="${pageNo==0?'background: gainsboro;':''}" th:href="@{${action}+'pageNo=0'}">1</a></li>
+                                <li class="page-item" th:if="${pageNo-1>0}"><a th:if="${pageNo-2>0}" style="display: inline-block;" class="page-link" th:href="@{${action}+'pageNo='+${pageNo-2}}">...</a><a style="display: inline-block;" class="page-link" th:href="@{${action}+'pageNo='+${pageNo-1}}" th:text="${pageNo}"></a></li>
+                                <li class="page-item" th:if="${pageNo!=0 }"><a  style="background: gainsboro;"  class="page-link" href="#" th:text="${pageNo+1}"></a></li>
+                                <li class="page-item" th:if="${pageNo+2<totalPages}"><a style="display: inline-block;"  class="page-link" th:href="@{${action}+'pageNo='+${pageNo+1}}" th:text="${pageNo+2}"></a><a  th:if="${pageNo+3<totalPages}" style="display: inline-block;" class="page-link" th:href="@{${action}+'pageNo='+${pageNo+2}}">...</a></li>
+                                <li class="page-item" th:if="${totalPages-pageNo>1}"><a th:style="${pageNo==totalPages-1?'background: gainsboro;':''}" class="page-link" th:href="@{${action}+'pageNo='+${totalPages-1}}" th:text="${totalPages}"></a></li>
+                                <li class="page-item"><a class="page-link" th:if="${pageNo<totalPages-1}" th:href="@{${action}+'pageNo='+${pageNo+1}}">Next</a></li>
                             </ul>
                         </nav>
                     </div>

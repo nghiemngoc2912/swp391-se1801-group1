@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CardTypeRepository extends JpaRepository<CardType, Integer> {
     List<CardType> findByPublisherId(int publisherId);
+    //Lacel
 }
+

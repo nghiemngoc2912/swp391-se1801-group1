@@ -51,4 +51,9 @@ public class Card {
     @ManyToOne
     @JoinColumn(name = "updated_by")
     User updatedBy;
+
+    @Override
+    public String toString() {
+        return "id " + id + " cardType " + cardType.getId() + " seriNumber " + seriNumber + " cardNumber " + cardNumber + " expiryDate " + expiryDate;
+    }
 }

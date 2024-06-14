@@ -9,23 +9,23 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
 @Table(name = "money")
-@NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Money {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-
     @Column(columnDefinition = "decimal(10,2)")
     double unitPrice;
-
     @Column(columnDefinition = "decimal(10,2)")
     double unitFund;
+
+    public Money() {
+
+    }
 }

@@ -55,4 +55,32 @@ public class PublisherServiceImpl implements PublisherService {
         publisher.setDeletedDate(null);
         publisherRepo.save(publisher);
     }
+
+    @Override
+    public List<Publisher> getAllPublisherActive() {
+        List<Publisher> listPublisher = new ArrayList<>();
+        listPublisher = publisherRepo.findAll();
+        List<Publisher> listPublisherActive = new ArrayList<>();
+
+        for (Publisher publisher : listPublisher) {
+            if(!publisher.getIsDeleted()){
+                listPublisherActive.add(publisher);
+            }
+        }
+        return listPublisherActive;
+    }
+
+    @Override
+    public List<Publisher> getAllPublisherDeactive() {
+        List<Publisher> listPublisher = new ArrayList<>();
+        listPublisher = publisherRepo.findAll();
+        List<Publisher> listPublisherDeActive = new ArrayList<>();
+
+        for (Publisher publisher : listPublisher) {
+            if(publisher.getIsDeleted()){
+                listPublisherDeActive.add(publisher);
+            }
+        }
+        return listPublisherDeActive;
+    }
 }

@@ -67,6 +67,10 @@
             <div class="alert alert-info">Mật khẩu của bạn đã được đặt lại. Bây giờ bạn có thể đăng nhập bằng tên người dùng và mật khẩu mới.</div>
         </div>
 
+        <div th:if="${limitEnterUser}" class="success-container">
+            <div class="alert alert-info">Bạn đã đăng nhập sai 5 lần liên tục, vui lòng đợi 5 phút để thử lại.</div>
+        </div>
+
         <div class="row">
             <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
                 <form action="/login" class="card login-form" id="login-form" method="post"
@@ -94,6 +98,7 @@
                         <div class="form-group input-group">
                             <label for="reg-pass">Mật khẩu</label>
                             <input th:value="*{password}" class="form-control" name="password" type="password" id="reg-pass" required>
+<!--                            <input th:value="*{password}" class="form-control" name="password" type="password" id="reg-pass" hidden>-->
                         </div>
 
                         <div class="form-group" style="text-align: right; margin-right: 5px;">

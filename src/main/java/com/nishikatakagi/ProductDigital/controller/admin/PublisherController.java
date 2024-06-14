@@ -170,12 +170,46 @@ public class PublisherController {
         return "redirect:/publisher";
     }
 
-    @GetMapping("/inactive")
+    @GetMapping("/delete")
     public String inactivePublisher(Model model, @RequestParam int id){
         UserSessionDto userSessionDto = (UserSessionDto) session.getAttribute("user_sess");
         User user = userService.findUserDBByUserSession(userSessionDto);
         Publisher publisher = publisherService.findPublisherById(id);
         publisherService.inactivePublisher(publisher,user);
         return "redirect:/publisher";
+    }
+
+    @GetMapping("/active")
+    public String activePublisher(Model model, @RequestParam int id){
+        UserSessionDto userSessionDto = (UserSessionDto) session.getAttribute("user_sess");
+        User user = userService.findUserDBByUserSession(userSessionDto);
+        Publisher publisher = publisherService.findPublisherById(id);
+        publisherService.activePublisher(publisher);
+        return "redirect:/publisher";
+    }
+
+    @GetMapping("/filter")
+    public String ShowPagePublisherFilter(Model model, @RequestParam(value = "status", required = false) String status) {
+
+        List<Publisher> listPublisher;
+        switch (status){
+            case "default":
+                listPublisher = publisherService.getAllPublisher();
+                break;
+            case "active":
+                listPublisher = publisherService.getAllPublisherActive();
+                break;
+            case "inactive":
+                listPublisher = publisherService.getAllPublisherDeactive();
+                break;
+            default:
+                System.out.println("Have error");
+                listPublisher = publisherService.getAllPublisher();
+                break;
+        }
+        model.addAttribute("status", status);
+        model.addAttribute("listPublisher", listPublisher);
+        return "pages/publisher/publisher.html";
+
     }
 }

@@ -16,4 +16,8 @@ public interface PublisherService {
     public void inactivePublisher(Publisher publisher, User user);
 
     public void activePublisher(Publisher publisher);
+
+    public List<Publisher> getAllPublisherActive();
+
+    public List<Publisher> getAllPublisherDeactive();
 }

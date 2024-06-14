@@ -53,4 +53,8 @@ public class User {
 	 @JoinColumn(name = "updated_by")
 	 User updatedBy;
 
+	 @Override
+	 public String toString() {
+		 return "id " + id + ", username " + username + ", password " + password + ", email " + email + ", phone " + phone;
+	 }
 }

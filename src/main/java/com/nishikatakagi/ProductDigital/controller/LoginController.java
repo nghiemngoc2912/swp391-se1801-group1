@@ -18,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -49,21 +48,23 @@ public class LoginController {
 
     public Map<Integer, String> captchaValue = new ConcurrentHashMap<Integer, String>();
 
+    private final Map<String, Integer> listCheckUserLogin = new HashMap<>();
+
     public LoginController(HttpSession httpSession) {
         this.httpSession = httpSession;
     }
 
     @GetMapping("")
-    public String ShowLoginPage(Model model, @CookieValue(value = "username",required = false) String userName) {
+    public String ShowLoginPage(Model model, @CookieValue(value = "username", required = false) String userName) {
         if (httpSession.getAttribute("user_sess") != null) {
             return "redirect:";
         }
 
-        if(userName != null){
+        if (userName != null) {
             UserLoginRequestDto userDto = new UserLoginRequestDto();
             userDto.setUserName(userName);
             model.addAttribute("userLoginRequestDto", userDto);
-        }else{
+        } else {
             model.addAttribute("userLoginRequestDto", new UserLoginRequestDto());
         }
 
@@ -119,21 +120,34 @@ public class LoginController {
     public String Login(@ModelAttribute("userLoginRequestDto") @Valid UserLoginRequestDto userLoginRequestDto,
                         BindingResult result, Model model, @RequestParam("idCaptcha") int idCaptcha, @RequestParam(value = "rememberMe", required = false) boolean rememberMe) {
         result = authService.Login(userLoginRequestDto, result);
+        // Nếu có lỗi ở login password
+        if (result.hasFieldErrors("password")) {
+            // Nếu trong danh sách của có username này thì tạo mới trong Map với value = 0
+            listCheckUserLogin.putIfAbsent(userLoginRequestDto.getUserName(), 0);
+            if(listCheckUserLogin.get(userLoginRequestDto.getUserName()) < 5) {
+                listCheckUserLogin.replace(userLoginRequestDto.getUserName(), listCheckUserLogin.get(userLoginRequestDto.getUserName()) + 1);
+            }
+        }
+
         User userBD = service.findByUsername(userLoginRequestDto.getUserName());
         // Tìm giá trị captcha theo idCaptcha lưu trong map
         String value = captchaValue.get(idCaptcha);
 
         if (!userLoginRequestDto.getCaptcha().equals(value)) {
-            // check captcha
-            result.addError(new FieldError("userLoginRequestDto", "captcha", "Captcha is incorrect"));
-        }else{
+            if (captchaValue.get(idCaptcha) == null) {
+                result.addError(new FieldError("userLoginRequestDto", "captcha", "Captcha đã hết hạn"));
+            } else {
+                result.addError(new FieldError("userLoginRequestDto", "captcha", "Captcha không đúng"));
+            }
+
+        } else {
             captchaValue.remove(idCaptcha);
             listCaptcha.remove(idCaptcha);
-            model.addAttribute("listCapthca_ID",captchaValue);
+            model.addAttribute("listCapthca_ID", captchaValue);
             model.addAttribute("captchaSvg", listCaptcha);
         }
 
-        if (result.hasErrors()) {
+        if (result.hasErrors() || (listCheckUserLogin.get(userLoginRequestDto.getUserName()) != null) && listCheckUserLogin.get(userLoginRequestDto.getUserName()) >= 5) {
             model.addAttribute("captchaSvg", captchaService.createCaptcha());
             model.addAttribute("userLoginRequestDto", userLoginRequestDto);
             //Tạo một id cho captcha
@@ -168,6 +182,18 @@ public class LoginController {
             Timer timer = new Timer();
             timer.schedule(task, 60 * 1000);
 
+            // Nếu số lần sau = 5 thì báo lỗi vào không cho đăng nhập
+            if (listCheckUserLogin.get(userLoginRequestDto.getUserName()) != null && listCheckUserLogin.get(userLoginRequestDto.getUserName()) >= 5) {
+                model.addAttribute("limitEnterUser", true);
+                TimerTask taskRemoveBanAccount5M = new TimerTask() {
+                    public void run() {
+                        listCheckUserLogin.remove(userLoginRequestDto.getUserName());
+                        System.out.println("Bây giờ người dùng " + userLoginRequestDto.getUserName() + " có thể đăng nhập");
+                    }
+                };
+                timer.schedule(taskRemoveBanAccount5M, 60 * 1000);
+            }
+
             return "publics/login";
         } else {
             UserSessionDto userSessionDto = new UserSessionDto();
@@ -182,6 +208,10 @@ public class LoginController {
                 usernameCookie.setMaxAge(60 * 60 * 24);
                 response.addCookie(usernameCookie);
             }
+
+            String captchaValue = "7123";
+            // captcha id = int.random(6); => 654321
+            httpSession.setAttribute("captcha654321", captchaValue);
 
             // nếu là admin - chuyến hướng đến trang admin
             if (userBD.getRoleId() == 1 && userBD != null) {

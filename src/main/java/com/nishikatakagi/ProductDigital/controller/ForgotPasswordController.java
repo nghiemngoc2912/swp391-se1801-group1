@@ -153,7 +153,7 @@ public class ForgotPasswordController {
         } else {
             int timesEnterOtp = (int) session.getAttribute("timesEnterOtp-forgotpassword") - 1;
             String error = "OTP không đúng, bạn còn " + timesEnterOtp + " lần nhập";
-            session.setAttribute("timesEnterOtp",timesEnterOtp);
+            session.setAttribute("timesEnterOtp-forgotpassword",timesEnterOtp);
             if (timesEnterOtp != 0){
                 model.addAttribute("action", "/forgotPassword/otp");
                 model.addAttribute("actionResend", "/forgotPassword/resend-otp");

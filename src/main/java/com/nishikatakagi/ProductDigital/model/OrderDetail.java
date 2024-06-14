@@ -30,6 +30,7 @@ public class OrderDetail {
     @ManyToOne
     @JoinColumn(name = "card_id")
     Card card;
+
     Integer quantity;
     @Column(columnDefinition = "decimal(10,2)")
     Double total;

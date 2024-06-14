@@ -183,7 +183,7 @@
                                         <button type="button" onclick="addToCart()" class="btn btn-primary mr-2">Thêm
                                             vào giỏ
                                             hàng</button>
-                                        <button class="btn btn-success">Thanh toán</button>
+                                        <button type="button" onclick="checkout()"  class="btn btn-success">Thanh toán</button>
                                     </div>
                                 </form>
 
@@ -217,6 +217,12 @@
         function addToCart() {
             var form = document.getElementById('item-form');
             form.setAttribute('action', '/cart/add');
+            form.setAttribute('method', 'get');
+            form.submit();
+        }
+        function checkout() {
+            var form = document.getElementById('item-form');
+            form.setAttribute('action', '/order/checkout');
             form.setAttribute('method', 'get');
             form.submit();
         }

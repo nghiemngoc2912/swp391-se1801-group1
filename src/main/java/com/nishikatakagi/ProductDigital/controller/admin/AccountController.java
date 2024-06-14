@@ -49,6 +49,7 @@ public class AccountController {
         }
 		model.addAttribute("totalPages", listAccount.getTotalPages());
         model.addAttribute("pageNo", pageNo);
+        model.addAttribute("action", "/account?");
         return "pages/account/view-account.html";
     }
 
@@ -157,11 +158,28 @@ public class AccountController {
     public String filterAccount(@RequestParam(value = "role", required = false) List<Integer> roleId,
             @RequestParam(value = "is-deleted", required = false) List<Integer> isDeleted,
             @RequestParam(value = "username", required = false) String username,@RequestParam(defaultValue = "0") Integer pageNo, Model model) {
-        Page<User> listAccount = userService.filterAccount(roleId, isDeleted, username,pageNo,2);
+        Page<User> listAccount = userService.filterAccount(roleId, isDeleted, username,pageNo,1);
         List<User> listAccount1 = listAccount.getContent();
         if(listAccount1.isEmpty()){
             model.addAttribute("error", "Không có tài khoản nào");
         }
+        String link = "/account/filter?";
+        if(roleId != null){
+            for(Integer role : roleId){
+                link += "role=" + role + "&";
+            }
+        }
+        if(isDeleted != null){
+            for(Integer delete : isDeleted){
+                link += "is-deleted=" + delete + "&";
+            }
+        }
+        link += "username=";
+        if(username != null){
+            link += username;
+        }
+        link += "&";
+        model.addAttribute("action", link);
         model.addAttribute("totalPages", listAccount.getTotalPages());
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("listAccount", listAccount1);
